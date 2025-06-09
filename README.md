@@ -1,91 +1,174 @@
-Positional Index with MapReduce
-This project implements a positional index for information retrieval using Hadoop MapReduce to process text documents and compute TF-IDF scores. It includes query processing, Python-based preprocessing, machine learning (clustering), visualizations, and a Flask web interface. The project runs in a Dockerized environment, replacing the need for a Cloudera VM.
-Features
+### Positional Index with MapReduce
 
-Hadoop MapReduce for building a positional index from text documents.
-Query processing with support for AND, OR, AND NOT, OR NOT operators.
-TF-IDF computation and document ranking based on similarity.
-Python preprocessing for cleaning input data (planned).
-Machine learning clustering for document analysis (planned).
-Visualizations of term frequencies and clustering results (planned).
-Flask web interface for interactive querying (planned).
+A Hadoop MapReduce-based positional index for information retrieval, supporting:
+- TF-IDF scoring
+- Boolean query processing
+- Python preprocessing
+- ML clustering (planned)
+- Visualizations (planned)
+- Flask web interface (planned)
 
-Project Structure
+The project runs in a **Dockerized environment**, eliminating the need for a Cloudera VM.
+
+---
+
+## Features
+
+- **Hadoop MapReduce**: Constructs a positional index from text documents.
+- **Query Processing**: Supports `AND`, `OR`, `AND NOT`, `OR NOT` operators.
+- **TF-IDF Scoring**: Ranks documents using term frequency–inverse document frequency.
+- **Python Preprocessing** *(planned)*: Cleans and normalizes raw input text.
+- **Machine Learning** *(planned)*: Clusters documents using K-means or similar.
+- **Visualizations** *(planned)*: Plots for term frequencies and clustering.
+- **Flask Web Interface** *(planned)*: Interactive query engine.
+
+---
+
+## Project Structure
+
+```plaintext
 positional-index-project/
 ├── src/
 │   ├── main/
-│   │   ├── java/                     # Java code for MapReduce and query processing
-│   │   ├── python/                   # Python scripts for preprocessing, ML, visualization
-│   │   ├── web/                      # Flask app and web assets
-│   │   ├── resources/                # Input files and MapReduce output
-│   ├── test/                         # Unit tests for Java and Python
-├── docker/                           # Docker configurations
-│   ├── hadoop/                       # Hadoop MapReduce environment
-│   ├── flask/                        # Flask web app environment
-├── pom.xml                           # Maven configuration
-├── requirements.txt                  # Python dependencies
-├── README.md                         # Project documentation
-├── .gitignore                        # Git ignore file
+│   │   ├── java/         # MapReduce + Query Processing
+│   │   ├── python/       # Preprocessing, ML, Visualizations
+│   │   ├── web/          # Flask app and web assets
+│   │   └── resources/    # Input files + MapReduce output
+│   └── test/             # Unit tests for Java & Python
+├── docker/
+│   ├── hadoop/           # Hadoop MapReduce setup
+│   └── flask/            # Flask app setup
+├── pom.xml               # Maven configuration
+├── requirements.txt      # Python dependencies
+├── README.md             # This file
+└── .gitignore            # Git ignore file
+````
 
-Prerequisites
+---
 
-Java 8 or higher
-Maven 3.6+
-Python 3.9+
-Docker and Docker Compose
-Input files in src/main/resources/input/ (format: docID text content)
+## Prerequisites
 
-Setup Instructions
+| Requirement      | Version       | Notes                                    |
+| ---------------- | ------------- | ---------------------------------------- |
+| Java             | 8 or higher   | For MapReduce jobs                       |
+| Maven            | 3.6+          | For building Java components             |
+| Python           | 3.9+          | For preprocessing, ML, and visualization |
+| Docker + Compose | Latest stable | For running Hadoop & Flask environments  |
+| Input Format     | —             | `docID text content` in input folder     |
 
-Clone the Repository
+---
+
+## Setup Instructions
+
+### 1. Clone the Repository
+
+```bash
 git clone https://github.com/Reemsoliiman/positional-index-MapReduce.git
 cd positional-index-project
+```
 
+### 2. Build Java Components
 
-Build the Java Project
+```bash
 mvn clean package
+```
 
+### 3. Add Input Files
 
-Prepare Input Files to src/main/resources/input/. Each file should follow the format:
-docID text content here
+Place files in:
 
+```
+src/main/resources/input/
+```
 
-Run Hadoop MapReduce with Docker
+Each file should follow the format:
+
+```text
+docID <tab or space> text content
+```
+
+### 4. Run Hadoop MapReduce
+
+```bash
 docker-compose -f docker/hadoop/docker-compose.yml up --build
+```
 
-Output is saved to src/main/resources/output/.
+Results will be saved in:
 
-Copy MapReduce Output
+```
+src/main/resources/output/
+```
+
+Then:
+
+```bash
 cp src/main/resources/output/part-r-00000 src/main/resources/mapReduceOutput.txt
+```
 
+### 5. Run Query Processor
 
-Run Query Processing
+```bash
 mvn exec:java -Dexec.mainClass="com.example.positionalindex.Main"
+```
 
-Follow the interactive menu to enter queries (e.g., hello AND world).
+You’ll be prompted to input queries like:
 
-Run Flask Web Interface (once implemented)
+```
+hello AND world
+```
+
+### 6. Run Flask Web Interface *(optional: in development)*
+
+```bash
 docker-compose -f docker/flask/docker-compose.yml up --build
+```
 
-Access the web interface at http://localhost:5000.
+Access at: [http://localhost:5000](http://localhost:5000)
 
+---
 
-Docker Details
+## Docker Details
 
-Hadoop: Runs MapReduce job using Hadoop 3.3.6. Access NameNode UI at http://localhost:9870 and ResourceManager UI at http://localhost:8088.
-Flask: Runs the web interface (planned). Access at http://localhost:5000.
+### Hadoop (Hadoop 3.3.6)
 
-Planned Updates
+* NameNode UI: [http://localhost:9870](http://localhost:9870)
+* ResourceManager UI: [http://localhost:8088](http://localhost:8088)
 
-Python Preprocessing: Add preprocess.py to clean and prepare input data for MapReduce.
-Machine Learning: Implement clustering.py for document clustering (e.g., using K-means).
-Visualizations: Create visualize.py for plots (e.g., term frequency histograms, cluster visualizations).
-Flask Interface: Develop app.py and templates for a web-based query interface.
+### Flask
 
-Testing
+* Web Interface: [http://localhost:5000](http://localhost:5000)
 
-Run Java tests:mvn test
+---
 
+## 🧪 Testing
 
-Run Python tests (once implemented):pytest src/test/python/
+### Java:
+
+```bash
+mvn test
+```
+
+### Python *(in progress)*:
+
+```bash
+pytest src/test/python/
+```
+
+---
+
+## Planned Features
+
+* `preprocess.py` – Input text normalization
+* `clustering.py` – ML for grouping similar docs
+* `visualize.py` – Term frequency & cluster plots
+* `app.py` – Full Flask query experience with templates
+
+---
+
+## Contributing
+
+Contributions are welcome!
+Please submit issues or pull requests via [GitHub](https://github.com/Reemsoliiman/positional-index-MapReduce).
+
+---
 
